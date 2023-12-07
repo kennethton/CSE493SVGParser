@@ -110,9 +110,10 @@
     <header role="banner">
     <h1>Laser Cutter Generator</h1>
     </header>
-    <form id="generatorForm">
+    <form id="generatorForm" role="form" aria-labelledby="formHeading">
+      <h2 id="formHeading">Generate SVG Form</h2>
       <label for="objectType">Select Object Type:</label>
-      <select id="objectType" name="objectType" aria-label="Select Object Type">
+      <select id="objectType" name="objectType" aria-label="Select Object Type" aria-required="true">
         <option value="rectangle">&#x25a0; Rectangle <i class="fas fa-square"></i></option>
         <option value="circle">&#x25cf; Circle <i class="fas fa-circle"></i></option>
         <option value="triangle">&#9651; Triangle <i class="fas fa-play"></i></option>
@@ -122,10 +123,10 @@
       </select>
 
       <label for="width">Width:</label>
-      <input type="number" id="width" name="width" value="50" min="1" aria-label="Width">
+      <input type="number" id="width" name="width" value="50" min="1" aria-label="Width" aria-required="true">
 
       <label for="height">Height:</label>
-      <input type="number" id="height" name="height" value="50" min="1" aria-label="Height">
+      <input type="number" id="height" name="height" value="50" min="1" aria-label="Height" aria-required="true">
 
       <button type="button" onclick="generateSVG()" aria-label="Generate SVG">Generate SVG</button>
     </form>
