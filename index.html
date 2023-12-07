@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laser Cutter Generator - Change 1</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap">
+
+  <style>
+    h1 {
+       color: #4caf50; /* Set the color to a green shade */
+      font-family: 'Pacifico', cursive; /* Use the Pacifico font for a fancier look */
+      font-size: 2em; /* Increase the font size */
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle text shadow */
+      margin-bottom: 20px;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: url('https://ibmix.de/wp-content/uploads/2023/10/Stage_SD_Illustration_Boerner_1920x1080-1.svg') center/cover fixed no-repeat; /* Add your image path here */
+    }
+    
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+      margin: 30px, 10px;
+      padding: 50px 20px;
+      background-color: rgba(225, 235, 230, 0.861); /* Added a semi-transparent white background */
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input, select, button {
+      width: calc(100% - 20px);
+      padding: 12px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, select:focus, button:focus {
+      outline: none;
+      border-color: #4caf50;
+    }
+
+    button {
+      background-color: #f78605;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #svgContainer {
+      margin-top: 20px;
+    }
+
+    select option::before {
+      margin-right: 5px;
+    }
+
+    @keyframes fadeInOut {
+      0%, 100% {
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+    
+    .fade-in {
+      opacity: 1 !important; /* Override the opacity to make it visible */
+    }
+    .svg-container {
+      animation: fadeInOut 1s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+  <main role="main">
+  <div class="container">
+    <header role="banner">
+    <h1>Laser Cutter Generator</h1>
+    </header>
+    <form id="generatorForm">
+      <label for="objectType">Select Object Type:</label>
+      <select id="objectType" name="objectType" aria-label="Select Object Type">
+        <option value="rectangle">&#x25a0; Rectangle <i class="fas fa-square"></i></option>
+        <option value="circle">&#x25cf; Circle <i class="fas fa-circle"></i></option>
+        <option value="triangle">&#9651; Triangle <i class="fas fa-play"></i></option>
+        <option value="ellipse">&#x25ef; Ellipse <i class="fas fa-adjust"></i></option>
+        <option value="line">&#x2500; Line <i class="fas fa-grip-lines"></i></option>
+        <option value="star">&#9733; Star <i class="fas fa-star"></i></option>
+      </select>
+
+      <label for="width">Width:</label>
+      <input type="number" id="width" name="width" value="50" min="1" aria-label="Width">
+
+      <label for="height">Height:</label>
+      <input type="number" id="height" name="height" value="50" min="1" aria-label="Height">
+
+      <button type="button" onclick="generateSVG()" aria-label="Generate SVG">Generate SVG</button>
+    </form>
+
+    <div id="svgContainer" class="svg-container" role="img" aria-label="Generated SVG">
+      <!-- Generated SVG will be placed here -->
+    </div>
+  </div>
+  </main>
+
+  <script>
+    
+    document.addEventListener('DOMContentLoaded', function () {
+      // Add the 'fade-in' class to the container after the page has loaded
+      document.querySelector('.container').classList.add('fade-in');
+    });
+    
+    function generateSVG() {
+      const objectType = document.getElementById('objectType').value;
+      const width = document.getElementById('width').value;
+      const height = document.getElementById('height').value;
+
+      let svgContent = '';
+
+      switch (objectType) {
+        case 'rectangle':
+          svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
+                          <rect width="${width}" height="${height}" stroke="black" stroke-width="2" fill="none"/>
+                        </svg>`;
+          break;
+        case 'circle':
+          svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
+                          <circle cx="${width / 2}" cy="${height / 2}" r="${Math.min(width, height) / 2}" stroke="black" stroke-width="2" fill="none"/>
+                        </svg>`;
+          break;
+        case 'triangle':
+          svgContent = generateTriangleSVG(width, height);
+          break;
+        case 'ellipse':
+          svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
+                          <ellipse cx="${width / 2}" cy="${height / 2}" rx="${width / 2}" ry="${height / 4}" stroke="black" stroke-width="2" fill="none"/>
+                        </svg>`;
+          break;
+        case 'line':
+          svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
+                          <line x1="0" y1="${height / 2}" x2="${width}" y2="${height / 2}" stroke="black" stroke-width="2"/>
+                        </svg>`;
+          break;
+        case 'star':
+          svgContent = generateStarSVG(width, height);
+          break;
+      }
+
+      const svgContainer = document.getElementById('svgContainer');
+      svgContainer.innerHTML = svgContent;
+
+      const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
+
+      const downloadLink = document.createElement('a');
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = 'generated.svg';
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+
+    function generateTriangleSVG(width, height) {
+      const pathData = generateTrianglePath(width, height);
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
+                <path d="${pathData}" stroke="black" stroke-width="2" fill="none"/>
+              </svg>`;
+    }
+
+    function generateTrianglePath(width, height) {
+      const halfWidth = width / 2;
+      const pathData = `M 0 ${height} ${halfWidth} 0 ${width} ${height} Z`;
+      return pathData;
+    }
+
+    function generateStarSVG(width, height) {
+      const cx = width / 2;
+      const cy = height / 2;
+      const outerRadius = Math.min(width, height) / 2;
+      const innerRadius = Math.min(width, height) / 3;
+
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
+                <path d="${generateStarPath(cx, cy, 5, outerRadius, innerRadius)}" stroke="black" stroke-width="2" fill="none"/>
+              </svg>`;
+    }
+
+    function generateStarPath(cx, cy, spikes, outerRadius, innerRadius) {
+      let rot = (Math.PI / 2) * 3;
+      let x = cx;
+      let y = cy;
+      let step = Math.PI / spikes;
+
+      let svgPath = `M ${cx} ${cy - outerRadius}`;
+
+      for (let i = 0; i < spikes; i++) {
+        x = cx + Math.cos(rot) * outerRadius;
+        y = cy + Math.sin(rot) * outerRadius;
+        svgPath += ` L ${x} ${y}`;
+        rot += step;
+
+        x = cx + Math.cos(rot) * innerRadius;
+        y = cy + Math.sin(rot) * innerRadius;
+        svgPath += ` L ${x} ${y}`;
+        rot += step;
+      }
+
+      svgPath += ` L ${cx} ${cy - outerRadius}`;
+
+      return svgPath;
+    }
+  </script>
+</body>
+</html>
