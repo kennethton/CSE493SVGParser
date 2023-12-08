@@ -103,12 +103,43 @@
       animation: fadeInOut 1s ease-in-out;
     }
 
+        .dropdown {
+      position: relative;
+      display: inline-block;
+      margin-right: 20px; /* Adjust the margin as needed */
+    }
+
+    #keybindsContent {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+      z-index: 1;
+    }
+
+    #keybindsButton {
+      background-color: #f78605;
+      color: black;
+      cursor: pointer;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
   <main role="main">
   <div class="container">
     <header role="banner">
+      <div class="dropdown">
+        <button id="keybindsButton" aria-label="keybinds. Press a to open" aria-required="true" onclick="toggleKeybindsDropdown()">Accessible keybinds (a)</button>
+        <div id="keybindsContent" aria-live="polite">
+          <p>- Press the o key to open the "Select Object Type" drop down, <br>
+          and use the up and down arrow keys to navigate through the options <br>
+          - Press the enter key to confirm a selection and go to the next field</p>
+        </div>
+      </div>
     <h1>Laser Cutter Generator</h1>
     </header>
     <form id="generatorForm" role="form" aria-labelledby="formHeading">
@@ -273,29 +304,25 @@ document.getElementById('height').addEventListener('keydown', function (event) {
 
       switch (objectType) {
         case 'rectangle':
-        const strokeWidth = 4; // Adjust the stroke width as needed
-    svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
-                    <rect width="${width}" height="${height}" stroke="black" stroke-width="${strokeWidth}" fill="transparent"/>
-                  </svg>`;
+          svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
+                          <rect width="${width}" height="${height}" stroke="black" stroke-width="2" fill="none"/>
+                        </svg>`;
           break;
-          case 'circle':
-        const radius = Math.min(width, height) / 2 - 2; // Adjusted radius to leave space for the stroke
-    svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
-                    <circle cx="${width / 2}" cy="${height / 2}" r="${radius}" stroke="black" stroke-width="2" fill="transparent"/>
-                  </svg>`;
-    break;
+        case 'circle':
+          svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
+                          <circle cx="${width / 2}" cy="${height / 2}" r="${Math.min(width, height) / 2}" stroke="black" stroke-width="2" fill="none"/>
+                        </svg>`;
+          break;
         case 'triangle':
           svgContent = generateTriangleSVG(width, height);
           break;
         case 'ellipse':
-        const rx = width / 2 - 2; // Adjusted horizontal radius to leave space for the stroke
-      const ry = height / 4 - 2; // Adjusted vertical radius to leave space for the stroke
-      svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
-                    <ellipse cx="${width / 2}" cy="${height / 2}" rx="${rx}" ry="${ry}" stroke="black" stroke-width="2" fill="transparent"/>
-                  </svg>`;
+          svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
+                          <ellipse cx="${width / 2}" cy="${height / 2}" rx="${width / 2}" ry="${height / 4}" stroke="black" stroke-width="2" fill="none"/>
+                        </svg>`;
           break;
         case 'line':
-          svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="transparent">
+          svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
                           <line x1="0" y1="${height / 2}" x2="${width}" y2="${height / 2}" stroke="black" stroke-width="2"/>
                         </svg>`;
           break;
@@ -303,7 +330,6 @@ document.getElementById('height').addEventListener('keydown', function (event) {
           svgContent = generateStarSVG(width, height);
           break;
       }
-
 
       const svgContainer = document.getElementById('svgContainer');
       svgContainer.innerHTML = svgContent;
@@ -366,6 +392,17 @@ document.getElementById('height').addEventListener('keydown', function (event) {
 
       return svgPath;
     }
+
+    function toggleKeybindsDropdown() {
+  const keybindsContent = document.getElementById('keybindsContent');
+  keybindsContent.style.display = keybindsContent.style.display === 'block' ? 'none' : 'block';
+  }
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key.toLowerCase() === 'a') {
+      toggleKeybindsDropdown();
+    }
+  });
   </script>
 </body>
 </html>
