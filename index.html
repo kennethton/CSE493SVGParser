@@ -140,9 +140,108 @@
   <script>
     
     document.addEventListener('DOMContentLoaded', function () {
-      // Add the 'fade-in' class to the container after the page has loaded
-      document.querySelector('.container').classList.add('fade-in');
+    const objectTypeDropdown = document.getElementById('objectType');
+
+    document.querySelector('.container').classList.add('fade-in');
+
+    objectTypeDropdown.addEventListener('keydown', function (event) {
+      if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        // Allow arrow keys to navigate through options
+        event.preventDefault();
+        const currentIndex = this.selectedIndex;
+        if (event.key === 'ArrowUp' && currentIndex > 0) {
+          this.selectedIndex = currentIndex - 1;
+        } else if (event.key === 'ArrowDown' && currentIndex < this.options.length - 1) {
+          this.selectedIndex = currentIndex + 1;
+        }
+      } else if (event.key === 'Enter') {
+        // Close dropdown and move focus to the next input when Enter key is pressed
+        this.setAttribute('size', '1');
+        this.removeEventListener('blur', blurHandler);
+        this.addEventListener('focus', focusHandler);
+        document.getElementById('width').focus();
+      }
     });
+
+    objectTypeDropdown.addEventListener('change', function () {
+      // Move focus to the next input element when the object type is selected
+      document.getElementById('width').focus();
+    });
+
+    document.getElementById('width').addEventListener('change', function () {
+      // Move focus to the next input element when width is entered
+      document.getElementById('height').focus();
+    });
+
+    document.getElementById('height').addEventListener('change', function () {
+      // Move focus to the "Generate SVG" button when height is entered
+      document.getElementById('generateButton').focus();
+    });
+
+    function blurHandler() {
+      // Close dropdown when focus is lost
+      this.setAttribute('size', '1');
+      this.removeEventListener('blur', blurHandler);
+      this.addEventListener('focus', focusHandler);
+    }
+
+    function focusHandler() {
+      // Set focus back to the dropdown when it gains focus
+      this.focus();
+    }
+  });
+
+  // Event listener for the 'o' key
+  document.addEventListener('keydown', function (event) {
+    const objectTypeDropdown = document.getElementById('objectType');
+    if (event.key.toLowerCase() === 'o') {
+      // Set the selectedIndex to 0 to focus on the first object
+      objectTypeDropdown.selectedIndex = 0;
+
+      objectTypeDropdown.setAttribute('size', '6');
+      objectTypeDropdown.removeEventListener('focus', focusHandler);
+      objectTypeDropdown.addEventListener('blur', blurHandler);
+      event.preventDefault();
+
+      // Focus on the dropdown directly
+      objectTypeDropdown.focus();
+
+      // Event listener for arrow keys inside the dropdown
+      document.addEventListener('keydown', arrowKeyHandler);
+    }
+  });
+
+  // Event listener for 'keydown' on the document to prevent default behavior when 'o' is pressed
+  document.addEventListener('keydown', function (event) {
+    const objectTypeDropdown = document.getElementById('objectType');
+    if (event.key.toLowerCase() === 'o') {
+      event.preventDefault();
+      objectTypeDropdown.focus();
+    }
+  });
+
+  function arrowKeyHandler(event) {
+    const objectTypeDropdown = document.getElementById('objectType');
+    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      // Allow arrow keys to navigate through options
+      event.preventDefault();
+      const currentIndex = objectTypeDropdown.selectedIndex;
+      if (event.key === 'ArrowUp' && currentIndex > 0) {
+        objectTypeDropdown.selectedIndex = currentIndex - 1;
+      } else if (event.key === 'ArrowDown' && currentIndex < objectTypeDropdown.options.length - 1) {
+        objectTypeDropdown.selectedIndex = currentIndex + 1;
+      }
+    } else if (event.key === 'Enter') {
+      // Close dropdown and move focus to the next input when Enter key is pressed
+      objectTypeDropdown.setAttribute('size', '1');
+      objectTypeDropdown.removeEventListener('blur', blurHandler);
+      objectTypeDropdown.addEventListener('focus', focusHandler);
+      document.getElementById('width').focus();
+
+      // Remove the arrow key event listener
+      document.removeEventListener('keydown', arrowKeyHandler);
+    }
+  }
     
     function generateSVG() {
       const objectType = document.getElementById('objectType').value;
