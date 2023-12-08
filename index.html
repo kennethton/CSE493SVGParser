@@ -31,7 +31,7 @@
     .container {
       width: 100%;
       max-width: 450px;
-      margin: 30px, 10px;
+      margin: 30px 10px;
       padding: 50px 20px;
       background-color: rgba(225, 235, 230, 0.861); /* Added a semi-transparent white background */
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
@@ -120,6 +120,17 @@
         <option value="ellipse">&#x25ef; Ellipse <i class="fas fa-adjust"></i></option>
         <option value="line">&#x2500; Line <i class="fas fa-grip-lines"></i></option>
         <option value="star">&#9733; Star <i class="fas fa-star"></i></option>
+        <optgroup label="Alphabet (Braille)">
+          <option value="A">A <i class="fas fa-font"></i></option>
+          <option value="C">C <i class="fas fa-font"></i></option>
+          <option value="D">D <i class="fas fa-font"></i></option>
+          <option value="E">E <i class="fas fa-font"></i></option>
+          <option value="F">F <i class="fas fa-font"></i></option>
+          <option value="G">G <i class="fas fa-font"></i></option>
+          <option value="H">H <i class="fas fa-font"></i></option>
+          <option value="I">I <i class="fas fa-font"></i></option>
+          <!-- Add more letters as needed -->
+        </optgroup>
       </select>
 
       <label for="width">Width:</label>
@@ -130,15 +141,16 @@
 
       <button type="button" id="generateButton" onclick="generateSVG()" aria-label="Generate SVG">Generate SVG</button>
     </form>
-
+    
     <div id="svgContainer" class="svg-container" role="img" aria-label="Generated SVG">
       <!-- Generated SVG will be placed here -->
     </div>
+    <div id="braille-container"></div>
   </div>
   </main>
 
   <script>
-    
+  
     document.addEventListener('DOMContentLoaded', function () {
     const objectTypeDropdown = document.getElementById('objectType');
 
@@ -265,45 +277,114 @@ document.getElementById('height').addEventListener('keydown', function (event) {
   }
     
     function generateSVG() {
-      const objectType = document.getElementById('objectType').value;
+      const objectTypeDropdown = document.getElementById('objectType');
+      const objectType = objectTypeDropdown.value;
       const width = document.getElementById('width').value;
       const height = document.getElementById('height').value;
+      const selectedValue = this.value;
 
-      let svgContent = '';
-
+  let svgContent = '';
       switch (objectType) {
         case 'rectangle':
-        const strokeWidth = 4; // Adjust the stroke width as needed
-    svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
-                    <rect width="${width}" height="${height}" stroke="black" stroke-width="${strokeWidth}" fill="transparent"/>
-                  </svg>`;
+          svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
+                          <rect width="${width}" height="${height}" stroke="black" stroke-width="2" fill="none"/>
+                        </svg>`;
           break;
-          case 'circle':
-        const radius = Math.min(width, height) / 2 - 2; // Adjusted radius to leave space for the stroke
-    svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
-                    <circle cx="${width / 2}" cy="${height / 2}" r="${radius}" stroke="black" stroke-width="2" fill="transparent"/>
-                  </svg>`;
-    break;
+        case 'circle':
+          svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
+                          <circle cx="${width / 2}" cy="${height / 2}" r="${Math.min(width, height) / 2}" stroke="black" stroke-width="2" fill="none"/>
+                        </svg>`;
+          break;
         case 'triangle':
           svgContent = generateTriangleSVG(width, height);
           break;
         case 'ellipse':
-        const rx = width / 2 - 2; // Adjusted horizontal radius to leave space for the stroke
-      const ry = height / 4 - 2; // Adjusted vertical radius to leave space for the stroke
-      svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
-                    <ellipse cx="${width / 2}" cy="${height / 2}" rx="${rx}" ry="${ry}" stroke="black" stroke-width="2" fill="transparent"/>
-                  </svg>`;
+          svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
+                          <ellipse cx="${width / 2}" cy="${height / 2}" rx="${width / 2}" ry="${height / 4}" stroke="black" stroke-width="2" fill="none"/>
+                        </svg>`;
           break;
         case 'line':
-          svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="transparent">
+          svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none">
                           <line x1="0" y1="${height / 2}" x2="${width}" y2="${height / 2}" stroke="black" stroke-width="2"/>
                         </svg>`;
           break;
         case 'star':
           svgContent = generateStarSVG(width, height);
           break;
-      }
 
+          case 'A':
+          svgContent = createBrailleSVG(
+           53, 76,
+          'black', 'transparent',
+          'transparent', 'transparent',
+          'transparent', 'transparent',);
+          break;
+
+          case 'B':
+          svgContent = createBrailleSVG(
+           53, 76,
+          'black', 'transparent',
+          'black', 'transparent',
+          'transparent', 'transparent',);
+          break;
+
+          case 'C':
+          svgContent = createBrailleSVG(
+           53, 76,
+          'black', 'black',
+          'transparent', 'transparent',
+          'transparent', 'transparent',);
+          break;
+
+          case 'D':
+          svgContent = createBrailleSVG(
+           53, 76,
+          'black', 'black',
+          'transparent', 'black',
+          'transparent', 'transparent',);
+          break;
+
+          case 'E':
+          svgContent = createBrailleSVG(
+           53, 76,
+          'black', 'transparent',
+          'transparent', 'black',
+          'transparent', 'transparent',);
+          break;
+
+          case 'F':
+          svgContent = createBrailleSVG(
+           53, 76,
+          'black', 'black',
+          'black', 'transparent',
+          'transparent', 'transparent',);
+          break;
+
+          case 'G':
+          svgContent = createBrailleSVG(
+           53, 76,
+          'black', 'black',
+          'black', 'black',
+          'transparent', 'transparent',);
+          break;
+
+          case 'H':
+          svgContent = createBrailleSVG(
+           53, 76,
+          'black', 'transparent',
+          'black', 'black',
+          'transparent', 'transparent',);
+          break;
+
+          case 'I':
+          svgContent = createBrailleSVG(
+           53, 76,
+          'transparent', 'black',
+          'black', 'transparent',
+          'transparent', 'transparent',);
+          break;
+
+    }
 
       const svgContainer = document.getElementById('svgContainer');
       svgContainer.innerHTML = svgContent;
@@ -366,6 +447,48 @@ document.getElementById('height').addEventListener('keydown', function (event) {
 
       return svgPath;
     }
+    function createBrailleSVG(width, height, fillTopLeft, fillTopRight, fillTopLeftUnder, fillTopRightUnder, fillBottomLeft, fillBottomRight) {
+  const aspectRatio = 1; // Set the desired aspect ratio
+  const viewBoxWidth = width * aspectRatio;
+  const viewBoxHeight = height;
+
+  const circleRadius = Math.min(viewBoxWidth, viewBoxHeight) / 4 - 0.6;
+
+  const brailleContainer = document.getElementById('braille-container');
+  brailleContainer.innerHTML = ''; // Clear previous content
+
+  const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svgElement.setAttribute('width', width);
+  svgElement.setAttribute('height', height);
+  svgElement.setAttribute('viewBox', `0 0 ${viewBoxWidth} ${viewBoxHeight * 1.2}`);
+  svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  svgElement.setAttribute('fill', 'none');
+
+  svgElement.innerHTML = `
+    ${createCircleSVG(circleRadius, circleRadius + 0.6, circleRadius, fillTopLeft)}
+    ${createCircleSVG(circleRadius, circleRadius * 3, circleRadius, fillTopLeftUnder)}
+    ${createCircleSVG(circleRadius, circleRadius * 5, circleRadius, fillBottomLeft)}
+    ${createCircleSVG(viewBoxWidth - circleRadius, circleRadius + 0.6, circleRadius, fillTopRight)}
+    ${createCircleSVG(viewBoxWidth - circleRadius, circleRadius * 3, circleRadius, fillTopRightUnder)}
+    ${createCircleSVG(viewBoxWidth - circleRadius, circleRadius * 5, circleRadius, fillBottomRight)}
+  `;
+
+  brailleContainer.appendChild(svgElement);
+}
+
+function createCircleSVG(cx, cy, radius, fill) {
+  const circleElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  circleElement.setAttribute('cx', cx);
+  circleElement.setAttribute('cy', cy);
+  circleElement.setAttribute('r', radius);
+  circleElement.setAttribute('stroke', 'black');
+  circleElement.setAttribute('stroke-width', '2');
+  circleElement.setAttribute('fill', fill);
+  
+  return circleElement.outerHTML;
+}
+
+
   </script>
 </body>
 </html>
