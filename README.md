@@ -1,1 +1,1 @@
-# CSE493SVGParser
+# UW CSE Swag Inventory
