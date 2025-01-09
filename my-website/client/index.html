@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVG Diagram Screenreader</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main role="main">
+    <div class="container">
+      <header role="banner">
+        <div class="dropdown">
+          <button id="keybindsButton" aria-label="keybinds. Press a to open" aria-required="true" onclick="toggleKeybindsDropdown()">Accessible keybinds (a)</button>
+          <div id="keybindsContent" aria-live="polite">
+            <p>- Press the o key to open the "Select Diagram" drop down, <br> and use the up and down arrow keys to navigate through the options <br> - Press the enter key to confirm a selection and go to the next field</p>
+          </div>
+        </div>
+        <h1>SVG Diagram Screenreader</h1>
+      </header>
+      <form id="generatorForm" role="form" aria-labelledby="formHeading">
+        <label for="objectType">Select Diagram:</label>
+        <select id="objectType" name="objectType" aria-label="Select Diagram" aria-required="true">
+          <option value="diagram 1"> DNF Diagram </option>
+          <option value="diagram 2"> ER Diagram </option>
+          <option value="diagram 3"> Password State Diagram </option>
+        </select>
+
+        <button type="button" id="generateButton" onclick="generateSVG()" aria-label="Generate SVG Diagram">Generate SVG Diagram</button>
+      </form>
+
+      <div id="svgContainer" class="svg-container" role="img" aria-label="Generated SVG Diagram">
+        <!-- Generated SVG Diagram will be placed here -->
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
